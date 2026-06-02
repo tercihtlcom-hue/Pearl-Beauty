@@ -2780,9 +2780,39 @@
       }
 
       /* ===== DÜZELTME SONU ===== */
+
+      /* ===== MOBİL FLOATING İPTAL ===== */
+      @media (max-width: 768px) {
+        .floating-bg,
+        .transform-zone,
+        .floater,
+        .bg-flash,
+        .bg-particles {
+          display: none !important;
+        }
+
+        body {
+          background: radial-gradient(
+            ellipse at top,
+            #0a0a3a 0%,
+            #050520 40%,
+            #02020a 100%
+          );
+        }
+
+        body.day-mode {
+          background: linear-gradient(
+            180deg,
+            #87ceeb 0%,
+            #b0e0e6 50%,
+            #e0f6ff 100%
+          );
+        }
+      }
     </style>
     <base target="_blank" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <base target="_blank" />
     <base target="_blank" />
     <base target="_blank" />
     <base target="_blank" />
@@ -4599,6 +4629,17 @@
     </div>
 
     <script>
+      // Mobil cihaz kontrolü - floating sistemini devre dışı bırak
+      function isMobile() {
+        return (
+          window.matchMedia("(max-width: 768px)").matches ||
+          window.matchMedia("(hover: none) and (pointer: coarse)").matches ||
+          /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+            navigator.userAgent,
+          )
+        );
+      }
+
       const SERVICES = [
         {
           id: 1,
@@ -4787,6 +4828,11 @@
       let zoneRadius = zoneRect.width / 2;
 
       window.addEventListener("resize", () => {
+        if (isMobile()) {
+          floatContainer.innerHTML = "";
+          floaters = [];
+          return;
+        }
         zoneRect = transformZone.getBoundingClientRect();
         zoneCenter = {
           x: zoneRect.left + zoneRect.width / 2,
@@ -4996,6 +5042,7 @@
       }
 
       function animate() {
+        if (isMobile()) return;
         const now = Date.now();
         floaters.forEach((f) => {
           if (now < f.startTime) return;
@@ -5098,6 +5145,7 @@
       function initFloaters() {
         floatContainer.innerHTML = "";
         floaters = [];
+        if (isMobile()) return;
         for (let i = 0; i < FLOAT_CONFIG.floaterCount; i++)
           floaters.push(createFloater(i));
       }
